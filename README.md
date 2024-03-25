@@ -1,2 +1,4 @@
 # Crypto-Price-Update
+
 Summary of the latest price updates and analysis for XRP, BTC, ETH, and ADA
+This script monitors real-time cryptocurrency prices and sends alerts when the prices cross predefined thresholds. It uses the Binance API to fetch the current prices of specific cryptocurrencies, including XRP, ADA, Ethereum, and Bitcoin. The user defines thresholds for each cryptocurrency, and if the current price exceeds these thresholds, a message alert is triggered, potentially sent via Telegram. Users need to replace placeholder API keys with their own and implement the `send_telegram_alert` function for sending alerts. The script operates in a continuous loop, checking prices and sending alerts when conditions are met, with a 60-second pause between checks to avoid excessive API calls.
