@@ -1,0 +1,56 @@
+import requests
+import json
+import time
+
+# Def cryptocurrency symbols
+symbols = ['XRPUSDT', 'ADAUSDT', 'ETHUSDT', 'BTCUSDT']
+
+# Def price thresholds for alerts
+price_thresholds = {
+    'XRPUSDT': 0.70,    # Example threshold for XRP
+    'ADAUSDT': 0.80,    # Example threshold for ADA
+    'ETHUSDT': 4000,    # Example threshold for Ethereum
+    'BTCUSDT': 75000,   # Example threshold for Bitcoin
+}
+
+# Def API key and secret 
+api_key = '__________'
+api_secret = '_________'
+
+# Binance API current prices
+api_url = 'https://api.binance.com/api/v3/ticker/price'
+
+# Function fetch current prices
+def fetch_prices():
+    try:
+        response = requests.get(api_url)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+        prices = response.json()
+        
+        # Filter prices for symbols in the symbols list
+        filtered_prices = {price['symbol']: price['price'] for price in prices if price['symbol'] in symbols}
+        
+        return filtered_prices
+    except requests.RequestException as e:
+        print('Error fetching prices:', e)
+        return None
+
+# Main loop
+while True:
+    try:
+        # Fetch current prices
+        prices = fetch_prices()
+        if prices:
+            print('Prices:', prices)  # Debugging
+            for symbol in symbols:
+                if symbol in prices:
+                    price = float(prices[symbol])
+                    threshold = price_thresholds.get(symbol)
+                    if threshold is not None and price > threshold:
+                        message = f'Alert: {symbol} price crossed ${threshold}'
+                        print('Sending Telegram alert:', message)  # Debugging
+                        send_telegram_alert(message)
+        # 60 seconds before fetching prices 
+        time.sleep(60)
+    except Exception as e:
+        print('Error occurred:', e)
